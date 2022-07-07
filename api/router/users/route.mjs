@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { Database } from "../../../database/database.mjs";
 import { protect } from "../../auth/protect.mjs";
+import { cache } from "../../cache/cache.mjs";
 
 const router = Router()
 
@@ -11,22 +12,24 @@ router.route("/")
   .options((req, res) => {
     res.setHeader("Allow", "OPTIONS, POST, GET").send()
   })
-  .get((req,res,next)=>{
-    let totalItems = Database.chain.get("users").value().length
-    let page = Math.max(Number.parseInt(req.query.page ?? 1),1),
+  .get(
+    cache(60),
+    (req, res, next) => {
+      let totalItems = Database.chain.get("users").value().length
+      let page = Math.max(Number.parseInt(req.query.page ?? 1), 1),
         pageSize = Number.parseInt(req.query.size ?? 25),
         offset = (page - 1) * pageSize,
         pagedItems = Database.chain.get("users").drop(offset).slice(0, pageSize).value();
-    Database.read(); //! Throwaway changes
-    let response = {
-      page,
-      size: pageSize,
-      total: pagedItems.length,
-      total_pages: Math.ceil(totalItems / pageSize),
-      users: pagedItems
-    }
-    return next(req.respond.Success(200, response));
-  })
+      Database.read(); //! Throwaway changes
+      let response = {
+        page,
+        size: pageSize,
+        total: pagedItems.length,
+        total_pages: Math.ceil(totalItems / pageSize),
+        users: pagedItems
+      }
+      return next(req.respond.Success(200, response));
+    })
   .post((req, res, next) => {
     console.log("New User")
     let newUser = { username: req.body.username };
@@ -93,7 +96,7 @@ router.route("/:user_id")
       const id = Number.parseInt(req.params.user_id);
       let o = Database.chain.get("users").find({ id }).value()
       if (o == null) return next(req.respond.Error(404, "User not Found", { id }));
-      let removed = Database.chain.get("users").remove({id}).value();
+      let removed = Database.chain.get("users").remove({ id }).value();
       Database.write()
       return next(req.respond.Success(200, removed));
     })
