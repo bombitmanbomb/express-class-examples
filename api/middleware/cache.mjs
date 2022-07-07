@@ -1,7 +1,7 @@
 import NodeCache from "node-cache";
 const myCache = new NodeCache({ stdTTL: 50, checkperiod: 60 })
 
-export function cache(ttl = 60) {
+export default function cache(ttl = 60) {
   /**
   * @param {import("express").Request} req
   * @param {import("express").Response} res

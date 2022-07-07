@@ -4,7 +4,7 @@ auth.set("abcd", { user_id: 0, permissions: new Set(["ADMIN"]) })
 auth.set("1234", { user_id: 1, permissions: new Set(["MODIFY", "DELETE"]) })
 auth.set("asdf", { user_id: 2, permissions: new Set(["MODIFY", "CREATE"]) })
 
-export function protect(access, param_match) {
+export default function protect(access, param_match) {
 
   /**
    * Authorization Middleware
