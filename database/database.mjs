@@ -28,3 +28,4 @@ export class Database {
     return db.write()
   }
 }
+export default Database

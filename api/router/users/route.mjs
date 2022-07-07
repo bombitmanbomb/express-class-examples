@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { Database } from "../../../database/database.mjs";
+import Database from "../../../database/database.mjs";
 import protect from "../../middleware/protect.mjs";
 import cache from "../../middleware/cache.mjs";
 
