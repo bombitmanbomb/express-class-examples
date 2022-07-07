@@ -1,6 +1,6 @@
 import { Router, json } from "express";
 import { ResponseFactory } from "./response/responseFactory.mjs";
-import apiRouting from "./router.mjs";
+import apiRouting from "./router/router.mjs";
 const api = Router()
 api.use(json());
 //! Response Injection Middleware
