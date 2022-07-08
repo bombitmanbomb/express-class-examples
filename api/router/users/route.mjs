@@ -2,6 +2,7 @@ import { Router } from "express";
 import Database from "../../../database/database.mjs";
 import protect from "../../middleware/protect.mjs";
 import cache from "../../middleware/cache.mjs";
+import { PagenatedArray } from "../../response/pagenatedArray.mjs";
 
 const router = Router()
 
@@ -15,20 +16,18 @@ router.route("/")
   .get(
     cache(60),
     (req, res, next) => {
-      let totalItems = Database.chain.get("users").value().length
-      let page = Math.max(Number.parseInt(req.query.page ?? 1), 1),
-        pageSize = Number.parseInt(req.query.size ?? 25),
-        offset = (page - 1) * pageSize,
-        pagedItems = Database.chain.get("users").drop(offset).slice(0, pageSize).value();
-      Database.read(); //! Throwaway changes
-      let response = {
-        page,
-        size: pageSize,
-        total: pagedItems.length,
-        total_pages: Math.ceil(totalItems / pageSize),
-        users: pagedItems
-      }
-      return next(req.respond.Success(200, response));
+      return next(
+        req.respond.Success(
+          200,
+          new PagenatedArray(
+            {
+              items: Database.chain.get("users").value(),
+              page: Math.max(Number.parseInt(req.query.page ?? 1), 1),
+              size: Number.parseInt(req.query.size ?? 25)
+            }
+          )
+        )
+      );
     })
   .post((req, res, next) => {
     console.log("New User")
