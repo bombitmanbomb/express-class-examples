@@ -13,10 +13,10 @@ readdir(directory).then((items) => {
   for (let path of items) {
     const filePath = join(directory, path);
     lstat(filePath).then(async stats => {
-      if (stats.isDirectory()){
-        console.info("Loading",path)
-        let module = await import("file:///"+join(filePath, "route.mjs"))
-        route.use("/"+path, module.default)
+      if (stats.isDirectory()) {
+        console.info("Loading", path)
+        let module = await import("file:///" + join(filePath, "route.mjs"))
+        route.use("/" + path, module.default);
       }
     })
   }

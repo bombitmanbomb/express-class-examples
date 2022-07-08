@@ -42,8 +42,8 @@ export class PagenatedArray {
     this._cache = {
       page: 0,
       size: 0,
-      total: 0,
       total_pages: 0,
+      total: 0,
       items: new Array()
     }
   }
@@ -55,18 +55,17 @@ export class PagenatedArray {
     if (!this._cacheDirty) return;
     const
       totalItems = this.raw.length,
-      page = this.page,
+      pageNumber = this.page,
       pageSize = this.size,
-      offset = (page - 1) * pageSize,
+      offset = (pageNumber - 1) * pageSize,
       pagedItems = _.chain(this.raw).drop(offset).slice(0, pageSize).value();
 
-    this._cache = {
-      page,
-      size: pageSize,
-      total: pagedItems.length,
-      total_pages: Math.ceil(totalItems / pageSize),
-      items: pagedItems
-    }
+    this._cache.page = pageNumber;
+    this._cache.size = pageSize;
+    this._cache.total_pages = Math.ceil(totalItems / pageSize);
+    this._cache.total = pagedItems.length;
+    this._cache.items = pagedItems;
+
     this._cacheDirty = false
   }
   get total_pages() {

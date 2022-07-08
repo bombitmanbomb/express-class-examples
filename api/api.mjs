@@ -16,7 +16,7 @@ api.use(apiRouting);
 //! Error Handling
 api.use((req, res, next) => {
   let resource = req.originalUrl.substring(4);
-  resource = resource.endsWith("/")?resource:resource+"/"
+  resource = resource.endsWith("/") ? resource : resource + "/"
   return next(req.respond.Error(404, "Resource not Found", { resource }));
 });
 
@@ -26,7 +26,7 @@ api.use((response, req, res, next) => {
   } else if (response instanceof Error) {
     return res.set("Content-Type", "application/json").status(500).json(req.respond.Error(500, response));
   } else {
-    console.log("Something went Wrong",response);
+    console.log("Something went Wrong", response);
     return res.set("Content-Type", "application/json").status(500).json(req.respond.Error(500, "Something went Wrong"));
   }
 })

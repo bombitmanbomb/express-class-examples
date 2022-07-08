@@ -18,7 +18,7 @@ export default function cache(ttl = 60) {
     if (myCache.has(key)) {
       let myTTL = myCache.getTtl(key)
       if (myTTL < Date.now()) break caching; //* Ignore Stale Cache
-      res.set("Age", ttl + Math.ceil((Date.now() - myTTL)*0.001));
+      res.set("Age", ttl + Math.ceil((Date.now() - myTTL) * 0.001));
       return next(myCache.get(key));
     }
 
