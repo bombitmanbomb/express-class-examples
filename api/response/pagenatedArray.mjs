@@ -14,16 +14,16 @@ export class PagenatedArray {
   }
 
   set raw(value) {
-    this._raw = value
-    this.markCacheDirty()
+    if (this._raw != value) this.markCacheDirty();
+    this._raw = value;
   }
   set page(value) {
-    this._page = value
-    this.markCacheDirty()
+    if (this._page != value) this.markCacheDirty();
+    this._page = value;
   }
   set size(value) {
-    this._size = value
-    this.markCacheDirty()
+    if (this._size != value) this.markCacheDirty();
+    this._size = value;
   }
 
   constructor(arr = [], page = 0, size = 25) {
@@ -44,16 +44,15 @@ export class PagenatedArray {
       size: 0,
       total: 0,
       total_pages: 0,
-      items: []
+      items: new Array()
     }
   }
 
   markCacheDirty() {
     this._cacheDirty = true
   }
-
-  toJSON() {
-    if (!this._cacheDirty) return this._cache
+  createCache() {
+    if (!this._cacheDirty) return;
     const
       totalItems = this.raw.length,
       page = this.page,
@@ -69,6 +68,21 @@ export class PagenatedArray {
       items: pagedItems
     }
     this._cacheDirty = false
+  }
+  get total_pages() {
+    this.createCache()
+    return this._cache.total_pages
+  }
+  get items() {
+    this.createCache()
+    return this._cache.items
+  }
+  get total() {
+    this.createCache()
+    return this._cache.total
+  }
+  toJSON() {
+    this.createCache()
     return this._cache
   }
 }
