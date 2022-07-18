@@ -11,6 +11,7 @@ console.log(directory)
 //* Asyncronousely map out `router` to express routings
 readdir(directory).then((items) => {
   for (let path of items) {
+    if (path.startsWith(".")) continue;
     const filePath = join(directory, path);
     lstat(filePath).then(async stats => {
       if (stats.isDirectory()) {
