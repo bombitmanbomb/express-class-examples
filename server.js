@@ -1,4 +1,4 @@
-const port = 3000;
+const port = 3001;
 import Express from "express";
 import api from "./api/api.mjs";
 const app = Express()
