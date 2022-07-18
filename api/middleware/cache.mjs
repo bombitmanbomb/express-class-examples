@@ -12,12 +12,10 @@ export default function cache(ttl = 60) {
     if (req.isCaching) return next();
     res.set("Cache-Control", `public, max-age=${ttl}, must-revalidate`);
     //* Check Cache
-    const key = "__express__" + (req.originalUrl ?? req.url);
+    const key = "__express-" + (req.originalUrl ?? req.url);
 
-    caching:
-    if (myCache.has(key)) {
-      let myTTL = myCache.getTtl(key)
-      if (myTTL < Date.now()) break caching; //* Ignore Stale Cache
+    let myTTL = myCache.getTtl(key)
+    if (myTTL!= null && !(myTTL < Date.now())) {
       res.set("Age", ttl + Math.ceil((Date.now() - myTTL) * 0.001));
       return next(myCache.get(key));
     }
